@@ -34,7 +34,7 @@
       for (var i = 9; i <= 17; i++) {
         // New div to hold timeslot elements
         var timeslotDiv = $("<div>").addClass("row my-1");
-/*
+
         // Color code the timeslot according to wether its current, in the past or in the future
         if (moment().hour() < moment(i, "h")) {
           timeslotDiv.addClass("bg-info");
@@ -43,15 +43,15 @@
         } else {
           timeslotDiv.addClass("bg-secondary");
         }
-*/
+
         // Add the column with the hour displayed
         var hourDiv = $("<div>").addClass("col-2 align-middle text-center");
         hourDiv.append($("<h4>").text(moment(i, "h").format("h:mm a")));
         timeslotDiv.append(hourDiv);
 
         // Add column with text area for user input
-        var textDiv = $("<div>").addClass("col-8 align-middle");
-        textDiv.append("<textarea>").addClass("w-100 h-100");
+        var textDiv = $("<div>").addClass("col-8");
+        textDiv.append("<textarea>");
         timeslotDiv.append(textDiv);
 
         // Append the timeslot to the main container
