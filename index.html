@@ -19,7 +19,7 @@
     <p class="lead">A simple calendar app for scheduling your work day</p>
     <p id="currentDay" class="lead"></p>
   </header>
-  <div class="container">
+  <div class="container" role="table" aria-label="Calendar Area">
     <!-- Timeblocks go here -->
   </div>
 
@@ -29,35 +29,67 @@
     $(document).ready(function () {
       // Display current date
       $("#currentDay").text(moment().format("MMMM Do, Y"));
+      renderTimeSlots();
 
+      // This functionality is still under construction
+      // loadSavedNotes();
+    });
+
+
+    function renderTimeSlots() {
       // Create a row for each slot and append to main container
       for (var i = 9; i <= 17; i++) {
         // New div to hold timeslot elements
-        var timeslotDiv = $("<div>").addClass("row my-1");
+        var timeslotDiv = $("<div>").addClass("row time-block");
+        timeslotDiv.attr("role", "row");
 
         // Color code the timeslot according to wether its current, in the past or in the future
         if (moment().hour() < moment(i, "h")) {
-          timeslotDiv.addClass("bg-info");
+          timeslotDiv.addClass("future");
         } else if (moment().hour() === moment(i, "h")) {
-          timeslotDiv.addClass("bg-success");
+          timeslotDiv.addClass("present");
         } else {
-          timeslotDiv.addClass("bg-secondary");
+          timeslotDiv.addClass("past");
         }
 
         // Add the column with the hour displayed
-        var hourDiv = $("<div>").addClass("col-2 align-middle text-center");
-        hourDiv.append($("<h4>").text(moment(i, "h").format("h:mm a")));
+        var hourDiv = $("<div>").addClass("col-2 hour");
+        hourDiv.attr("role", "rowheader");
+        hourDiv.append($("<h4>").text(moment(i, "h").format("h A")));
         timeslotDiv.append(hourDiv);
 
         // Add column with text area for user input
         var textDiv = $("<div>").addClass("col-8");
-        textDiv.append("<textarea>");
+        textDiv.attr("role", "cell");
+        textDiv.append("<textarea>").attr("aria-label", "Time Slot Notes").attr("data-hour", i);
         timeslotDiv.append(textDiv);
+
+        // Add the save button
+        var buttonDiv = $("<div>").addClass("col");
+        buttonDiv.attr("role", "cell");
+        var saveButton = $("<button>").addClass("fa fa-save fa-2x saveBtn");
+        saveButton.attr("aria-label", "Save");
+        saveButton.attr("data-hour", i);
+        buttonDiv.append(saveButton);
+        timeslotDiv.append(buttonDiv);
 
         // Append the timeslot to the main container
         $(".container").append(timeslotDiv);
       }
-    })
+    }
+
+    function loadSavedNotes() {
+      // Load any saved note data into the calendar
+      var notesObj = null;
+      var notes = localStorage.getItem("notes");
+      if (notes != null) {
+        try {
+          notesObj = JSON.parse(notes);
+        } catch {
+          return;
+        }
+      }
+    }
   </script>
 </body>
 
