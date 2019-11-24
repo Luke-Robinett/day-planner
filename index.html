@@ -29,16 +29,17 @@
     $(document).ready(function () {
       // Display current date
       $("#currentDay").text(moment().format("MMMM Do, Y"));
+
+      // Draw the calendar
       renderTimeSlots();
-
-      // This functionality is still under construction
-      // loadSavedNotes();
     });
-
 
     function renderTimeSlots() {
       // Create a row for each slot and append to main container
+      // Iterator goes from 9 to 17 to move through the 24-hour times of the time slots 9AM to 5PM
       for (var i = 9; i <= 17; i++) {
+        // Note: additional ARIA attributes are set on some elements to provide compatibility with screen readers
+
         // New div to hold timeslot elements
         var timeslotDiv = $("<div>").addClass("row time-block");
         timeslotDiv.attr("role", "row");
@@ -55,13 +56,23 @@
         // Add the column with the hour displayed
         var hourDiv = $("<div>").addClass("col-2 hour");
         hourDiv.attr("role", "rowheader");
-        hourDiv.append($("<h4>").text(moment(i, "h").format("h A")));
+        hourDiv.append($("<p>").text(moment(i, "h").format("h A")));
         timeslotDiv.append(hourDiv);
 
         // Add column with text area for user input
         var textDiv = $("<div>").addClass("col-8");
         textDiv.attr("role", "cell");
-        textDiv.append("<textarea>").attr("aria-label", "Time Slot Notes").attr("data-hour", i);
+
+        var textArea = $("<textarea>");
+        textArea.attr("aria-label", "Time Slot Notes");
+        textArea.attr("data-hour", i);
+
+        // Check for saved data in local storage for the textarea and populate it if found
+        var savedText = localStorage.getItem("timeSlot" + i.toString());
+        if (savedText != null && savedText.trim().length > 0)
+        textArea.text(savedText);
+
+        textDiv.append(textArea);
         timeslotDiv.append(textDiv);
 
         // Add the save button
