@@ -32,6 +32,14 @@
 
       // Draw the calendar
       renderTimeSlots();
+
+      // Click event for save buttons
+      $(".saveBtn").click(function(event) {
+        event.preventDefault();
+
+        var i = $(this).attr("data-hour");
+        localStorage.setItem("timeSlot" + i, $("textarea[data-hour=" + i + "]").val());
+      });
     });
 
     function renderTimeSlots() {
@@ -67,10 +75,9 @@
         textArea.attr("aria-label", "Time Slot Notes");
         textArea.attr("data-hour", i);
 
-        // Check for saved data in local storage for the textarea and populate it if found
-        var savedText = localStorage.getItem("timeSlot" + i.toString());
-        if (savedText != null && savedText.trim().length > 0)
-        textArea.text(savedText);
+        // Load any saved data for the timeslot, if any
+        var savedText = localStorage.getItem("timeSlot" + i);
+        textArea.val(savedText);
 
         textDiv.append(textArea);
         timeslotDiv.append(textDiv);
